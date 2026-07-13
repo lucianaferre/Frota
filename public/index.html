@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestão de Frota - PM Blumenau</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <div class="logo">
+                <i class="fas fa-police"></i>
+                <span>PM Blumenau</span>
+            </div>
+            <nav class="menu">
+                <a href="#" data-page="dashboard" class="menu-item active">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#" data-page="viaturas" class="menu-item">
+                    <i class="fas fa-car"></i>
+                    <span>Viaturas</span>
+                </a>
+                <a href="#" data-page="manutencao" class="menu-item">
+                    <i class="fas fa-tools"></i>
+                    <span>Manutenção</span>
+                </a>
+                <a href="#" data-page="ordens" class="menu-item">
+                    <i class="fas fa-clipboard-list"></i>
+                    <span>Ordens de Serviço</span>
+                </a>
+                <a href="#" data-page="historico" class="menu-item">
+                    <i class="fas fa-history"></i>
+                    <span>Histórico</span>
+                </a>
+                <a href="#" data-page="rastreamento" class="menu-item">
+                    <i class="fas fa-map-location-dot"></i>
+                    <span>Rastreamento</span>
+                </a>
+                <a href="#" data-page="indicadores" class="menu-item">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Indicadores</span>
+                </a>
+                <a href="#" data-page="relatorios" class="menu-item">
+                    <i class="fas fa-file-pdf"></i>
+                    <span>Relatórios</span>
+                </a>
+                <a href="#" data-page="usuarios" class="menu-item">
+                    <i class="fas fa-users"></i>
+                    <span>Usuários</span>
+                </a>
+                <a href="#" data-page="configuracoes" class="menu-item">
+                    <i class="fas fa-cog"></i>
+                    <span>Configurações</span>
+                </a>
+            </nav>
+            <div class="user-profile">
+                <img src="https://via.placeholder.com/50" alt="Perfil">
+                <div class="user-info">
+                    <p class="user-name">Luciana Ferre</p>
+                    <p class="user-role">Administrador</p>
+                </div>
+                <button class="logout-btn" title="Sair">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <main class="main-content">
+            <!-- TOP BAR -->
+            <header class="topbar">
+                <div class="topbar-left">
+                    <button class="menu-toggle" id="menuToggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Buscar viaturas, ordens..." id="searchInput">
+                    </div>
+                </div>
+                <div class="topbar-right">
+                    <button class="topbar-btn notification-btn">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge">3</span>
+                    </button>
+                    <button class="topbar-btn alerts-btn">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span class="alerts-badge">5</span>
+                    </button>
+                    <button class="topbar-btn theme-toggle" id="themeToggle">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </div>
+            </header>
+
+            <!-- PAGE CONTENT -->
+            <div class="page-content" id="pageContent">
+                <!-- Content loaded dynamically -->
+            </div>
+        </main>
+    </div>
+
+    <!-- MODALS -->
+    <div class="modal" id="viaturaModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="viaturaModalTitle">Nova Viatura</h2>
+                <button class="modal-close" data-close-modal="viaturaModal">&times;</button>
+            </div>
+            <form id="viaturaForm">
+                <div class="form-group">
+                    <label>Número da Viatura</label>
+                    <input type="text" name="numero" required>
+                </div>
+                <div class="form-group">
+                    <label>Placa</label>
+                    <input type="text" name="placa" required>
+                </div>
+                <div class="form-group">
+                    <label>Modelo</label>
+                    <input type="text" name="modelo" required>
+                </div>
+                <div class="form-group">
+                    <label>Ano</label>
+                    <input type="number" name="ano" required>
+                </div>
+                <div class="form-group">
+                    <label>Quilometragem</label>
+                    <input type="number" name="quilometragem" required>
+                </div>
+                <div class="form-group">
+                    <label>Unidade</label>
+                    <input type="text" name="unidade" required>
+                </div>
+                <div class="form-group">
+                    <label>Status</label>
+                    <select name="status" required>
+                        <option value="Em operação">Em operação</option>
+                        <option value="Em manutenção">Em manutenção</option>
+                        <option value="Indisponível">Indisponível</option>
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                    <button type="button" class="btn btn-secondary" data-close-modal="viaturaModal">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal" id="ordemModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Nova Ordem de Serviço</h2>
+                <button class="modal-close" data-close-modal="ordemModal">&times;</button>
+            </div>
+            <form id="ordemForm">
+                <div class="form-group">
+                    <label>Viatura</label>
+                    <select name="viaturaId" required id="viaturaSelect"></select>
+                </div>
+                <div class="form-group">
+                    <label>Problema</label>
+                    <textarea name="problema" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Serviço Executado</label>
+                    <textarea name="servicoExecutado" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Responsável</label>
+                    <input type="text" name="responsavel" required>
+                </div>
+                <div class="form-group">
+                    <label>Peças (separadas por vírgula)</label>
+                    <textarea name="pecas" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Custo</label>
+                    <input type="number" name="custo" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label>Tempo de Parada (horas)</label>
+                    <input type="number" name="tempoParada" required>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                    <button type="button" class="btn btn-secondary" data-close-modal="ordemModal">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal" id="usuarioModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Novo Usuário</h2>
+                <button class="modal-close" data-close-modal="usuarioModal">&times;</button>
+            </div>
+            <form id="usuarioForm">
+                <div class="form-group">
+                    <label>Nome</label>
+                    <input type="text" name="nome" required>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label>Cargo</label>
+                    <input type="text" name="cargo" required>
+                </div>
+                <div class="form-group">
+                    <label>Nível</label>
+                    <select name="nivel" required>
+                        <option value="admin">Administrador</option>
+                        <option value="gestor">Gestor</option>
+                        <option value="mecanico">Mecânico</option>
+                        <option value="policial">Policial</option>
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                    <button type="button" class="btn btn-secondary" data-close-modal="usuarioModal">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script src="js/app.js"></script>
+    <script src="js/dashboard.js"></script>
+    <script src="js/viaturas.js"></script>
+    <script src="js/manutencao.js"></script>
+    <script src="js/ordens.js"></script>
+    <script src="js/historico.js"></script>
+    <script src="js/rastreamento.js"></script>
+    <script src="js/indicadores.js"></script>
+    <script src="js/relatorios.js"></script>
+    <script src="js/usuarios.js"></script>
+    <script src="js/utils.js"></script>
+</body>
+</html>
